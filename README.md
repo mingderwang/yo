@@ -1,0 +1,4 @@
+yo
+==
+
+my yeoman project
