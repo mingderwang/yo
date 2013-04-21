@@ -1,3 +1,4 @@
+'use strict';
 /*
   <div first-directive></div>
     <div directive-with-attrs dir-value="yo"></div>
@@ -9,85 +10,85 @@
     <div seventh-directive></div>
 
   */
-angular.module("directives", [])
-  .directive("firstDirective", function() {
+angular.module('directives', [])
+  .directive('firstDirective', function() {
     return function(scope, element) {
-      element.text("Basic");
+      element.text('Basic');
     };
   })
-  .directive("directiveWithAttrs", function() {
+  .directive('directiveWithAttrs', function() {
     return function(scope, element, attrs) {
       element.text(attrs.dirValue);
     };
   })
-  .directive("directiveWithInterpolatedAttrs", function() {
+  .directive('directiveWithInterpolatedAttrs', function() {
     return function(scope, element, attrs) {
-      attrs.$observe("dirValue", function(newVal) {
+      attrs.$observe('dirValue', function(newVal) {
         element.text(newVal);
       });
     };
   })
-  .directive("directiveWithIsolateScope", function() {
+  .directive('directiveWithIsolateScope', function() {
     return {
       scope: {
-        content: "=dirIncomingValue",
-        thisFunc: "&dirIncomingFunction"
+        content: '=dirIncomingValue',
+        thisFunc: '&dirIncomingFunction'
       },
-      template:"{{content}} <button ng-click=\"thisFunc()('foo!')\">Click me to reset someValue</button>"
+      template:'{{content}} <button ng-click=\"thisFunc()(\"foo!\")\">Click me to reset someValue</button>'
     };
   })
-  .directive("cssDirective", function() {
+  .directive('cssDirective', function() {
     return {
-      restrict: "C",
+      restrict: 'C',
       link: function(scope, element) {
-        element.text("CSS-Basic");
+        element.text('CSS-Basic');
       }
     };
   })
-  .directive("cssDirectiveWithValue", function() {
+  .directive('cssDirectiveWithValue', function() {
     return {
-      restrict: "C",
+      restrict: 'C',
       link: function(scope, element, attrs) {
         element.text(attrs.cssDirectiveWithValue);
       }
     };
   })
-  .directive("elementDirective", function() {
+  .directive('elementDirective', function() {
     return {
-      restrict: "E",
-      link: function(scope, element, attrs) {
-        element.text("Element Level!  Woot!");
+      restrict: 'E',
+      link: function(scope, element) {
+        element.text('Element Level!  Woot!');
       }
     };
   })
-  .service("myService", function() {
-    this.value = "IM IN UR SERVCS!";
+  .service('myService', function() {
+    this.value = 'IM IN UR SERVCS!';
   })
-  .directive("directiveInjectedWithService", function(myService) {
+  .directive('directiveInjectedWithService', function(myService) {
     return {
-      link: function(scope, element, attrs) {
+      link: function(scope, element) {
         element.text(myService.value);
       }
     };
   })
-  .controller("fooController", function($scope, $element, $attrs) {
+  .controller('fooController', function($scope, $element) {
     this.foo = function(source) {
-      $element.append("I've been foo'ed by " + source + "!");
+      $element.append('I\'ve been foo\'ed by ' + source + '!');
     };
   })
-  .directive("directiveWithController", function() {
+  .directive('directiveWithController', function() {
     return {
-      controller: function($scope, $element, $attrs) {
+      controller: function($scope, $element) {
         this.foo = function() {
-          $element.append("I've been foo'ed!");
+          $element.append('I\'ve been foo\'ed!');
         };
       }
     };
   })
-  .directive("directiveRequiringController", function() {
+  .directive('directiveRequiringController', function() {
     return {
-      require:"^directiveWithController",
-      template: "<button ng-click=\"clickMe()\">Foo that crazy controller</button>",
+      require:'^directiveWithController',
+      template: '<button ng-click=\"clickMe()\">Foo that crazy controller</button>',
       scope: true,
       link: function(scope, element, attrs, controller) {
         scope.clickMe = function() {
@@ -96,52 +97,50 @@ angular.module("directives", [])
       }
     };
   })
-  .directive("directiveWithCompile", function(myService) {
+  .directive('directiveWithCompile', function() {
     return {
-      compile: function(tEl, tAttr) {
-        tEl.text("IM IN UR COMPILE!!!");
-        return function(scope, element, attrs) {
-          tEl.append("Now I'm in your Linking Function, though!");
+      compile: function(tEl) {
+        tEl.text('IM IN UR COMPILE!!!');
+        return function() {
+          tEl.append('Now I\'m in your Linking Function, though!');
         };
       }
     };
   })
-  .directive("directiveWithModifiedCloning", function(myService) {
+  .directive('directiveWithModifiedCloning', function() {
     return {
-      compile: function(tEl, tAttr) {
+      compile: function(tEl) {
         var i = 1;
-        tEl.text("IM IN UR COMPILE!!!");
-        return function(scope, element, attrs) {
-          tEl.text("I've been cloned " + (i++) + " times!");
+        tEl.text('IM IN UR COMPILE!!!');
+        return function() {
+          tEl.text('I\'ve been cloned ' + (i++) + ' times!');
         };
       }
     };
   })
-  .directive("directiveWithPreLink", function(myService) {
+  .directive('directiveWithPreLink', function() {
     return {
-      template:"<div first-directive>Thing1</div><div first-directive>Thing2</div>",
-      compile: function(tEl, tAttr) {
+      template:'<div first-directive>Thing1</div><div first-directive>Thing2</div>',
+      compile: function() {
         return {
-          pre: function(scope, el, attrs) {
-            el.children().eq(1).append("Bleah!");
+          pre: function(scope, el) {
+            el.children().eq(1).append('Bleah!');
           },
-          post: function(scope, el, attrs) {
-            
+          post: function() {
           }
         };
       }
     };
   })
-  .directive("directiveWithPostLink", function(myService) {
+  .directive('directiveWithPostLink', function() {
     return {
-      template:"<div first-directive>Thing1</div><div first-directive>Thing2</div>",
-      compile: function(tEl, tAttr) {
+      template:'<div first-directive>Thing1</div><div first-directive>Thing2</div>',
+      compile: function() {
         return {
-          pre: function(scope, el, attrs) {
-            
+          pre: function() {
           },
-          post: function(scope, el, attrs) {
-            el.children().eq(1).append("Bleah!");
+          post: function(scope, el) {
+            el.children().eq(1).append('Bleah!');
           }
         };
       }
